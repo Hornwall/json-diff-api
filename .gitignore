@@ -45,6 +45,8 @@ coverage.xml
 *,cover
 .hypothesis/
 
+.DS_Store
+
 # Translations
 *.mo
 *.pot
