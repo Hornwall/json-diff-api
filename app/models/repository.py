@@ -23,6 +23,9 @@ class Repository(object):
     def modified_files(self):
         return self.__filter_changes("M")
 
+    def list_files(self):
+        return [blob.name for blob in self.repo.head.commit.tree.blobs]
+
 # Private
     def __get_date_time(self, timestamp):
         t = time.gmtime(self.repo.head.commit.committed_date)

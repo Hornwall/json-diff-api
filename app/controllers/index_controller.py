@@ -16,9 +16,6 @@ def index():
 def view(repository_name):
     repository = Repository.find(current_app.config.get("REPOS_DIR_PATH"), repository_name)
     if repository:
-        for change in repository.added_files():
-            print(change)
-
         changes = {}
         changes["added_documents"] = [change.a_path for change in repository.added_files()]
         changes["deleted_documents"] = [change.a_path for change in repository.deleted_files()]
@@ -28,3 +25,12 @@ def view(repository_name):
         error = { "error": "Not found!" }
         return Response(json.dumps(error, sort_keys=True), mimetype="application/json"), 404
 
+@index_blueprint.route("/<repository_name>/files")
+def view_files(repository_name):
+    repository = Repository.find(current_app.config.get("REPOS_DIR_PATH"), repository_name)
+
+    if repository:
+        return Response(json.dumps(repository.list_files(), sort_keys=True), mimetype="application/json"), 404
+    else:
+        error = { "error": "Not found!" }
+        return Response(json.dumps(error, sort_keys=True), mimetype="application/json"), 404
