@@ -26,6 +26,12 @@ class Repository(object):
     def list_files(self):
         return [blob.name for blob in self.repo.head.commit.tree.blobs]
 
+    def get_file_content(self, path):
+        return self.repo.head.commit.tree[path].data_stream.read()
+
+    def file_exists(self, path):
+        return path in self.repo.head.commit.tree
+
 # Private
     def __get_date_time(self, timestamp):
         t = time.gmtime(self.repo.head.commit.committed_date)

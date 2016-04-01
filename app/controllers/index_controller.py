@@ -30,7 +30,23 @@ def view_files(repository_name):
     repository = Repository.find(current_app.config.get("REPOS_DIR_PATH"), repository_name)
 
     if repository:
-        return Response(json.dumps(repository.list_files(), sort_keys=True), mimetype="application/json"), 404
+        return Response(json.dumps(repository.list_files(), sort_keys=True), mimetype="application/json")
     else:
         error = { "error": "Not found!" }
         return Response(json.dumps(error, sort_keys=True), mimetype="application/json"), 404
+
+@index_blueprint.route("/<repository_name>/files/<file_name>")
+def view_file(repository_name, file_name):
+    repository = Repository.find(current_app.config.get("REPOS_DIR_PATH"), repository_name)
+
+    if repository:
+        if repository.file_exists(file_name):
+            file_content = repository.get_file_content(file_name)
+            if isinstance(file_content, str):
+                return Response("{}", mimetype="application/json")
+            else:
+                return Response(file_content.decode("utf-8"), mimetype="application/json")
+
+    error = { "error": "Not found!" }
+    return Response(json.dumps(error, sort_keys=True), mimetype="application/json"), 404
+
