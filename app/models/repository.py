@@ -55,6 +55,22 @@ class Repository(object):
         else:
             return None
 
+    def find_or_create(repo_directory, repository_name):
+        repo = Repository.find(repo_directory, repository_name)
+
+        if not repo:
+            repo_path = os.path.join(repo_directory, repository_name)
+
+            if not os.path.exists(repo_path):
+                os.makedirs(repo_path)
+
+            if not Repository.__is_repo(repo_path):
+                repo =  Repo.init(repo_path, bare=False)
+
+            return Repository(repo, repository_name)
+        else:
+            return repo
+
     def __is_repo(directory):
         try:
             Repo(directory)

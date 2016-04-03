@@ -1,7 +1,11 @@
-from flask import Blueprint, Response, current_app
+import os
+import zipfile
+import simplejson as json
+
+from flask import Blueprint, Response, current_app, request
 from models.repository import Repository
 from formatters.repository_formatter import RepositoryFormatter
-import simplejson as json
+from datetime import datetime
 
 index_blueprint = Blueprint('index', __name__)
 
@@ -50,3 +54,22 @@ def view_file(repository_name, file_name):
     error = { "error": "Not found!" }
     return Response(json.dumps(error, sort_keys=True), mimetype="application/json"), 404
 
+@index_blueprint.route("/<repository_name>/update", methods=["post"])
+def updated_repository(repository_name):
+    repository_path = os.path.join(current_app.config.get("REPOS_DIR_PATH"), repository_name)
+
+    repository = Repository.find_or_create(current_app.config.get("REPOS_DIR_PATH"), repository_name)
+    zip_file = zipfile.ZipFile(request.files["file"])
+
+    for name in [name for name in os.listdir(repository_path) if name != ".git"]:
+            os.remove(os.path.join(repository_path, name))
+
+    zip_file.extractall(repository_path)
+
+    repository.repo.git.add(A=True)
+    try:
+        repository.repo.git.commit(m=datetime.today().strftime("%s"))
+    except:
+        return "No changes where made"
+
+    return "updated"
