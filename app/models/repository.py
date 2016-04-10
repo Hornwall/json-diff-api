@@ -29,8 +29,14 @@ class Repository(object):
     def get_file_content(self, path):
         return self.repo.head.commit.tree[path].data_stream.read()
 
+    def get_file_content_from_commit(self, path, steps):
+        return self.repo.commit("head~" + steps).tree[path].data_stream.read()
+
     def file_exists(self, path):
         return path in self.repo.head.commit.tree
+
+    def file_exists_in_commit(self, path, steps):
+        return path in self.repo.commit("head~" + steps).tree
 
 # Private
     def __get_date_time(self, timestamp):

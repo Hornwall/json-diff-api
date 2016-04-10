@@ -41,15 +41,18 @@ def view_files(repository_name):
 
 @index_blueprint.route("/<repository_name>/files/<file_name>")
 def view_file(repository_name, file_name):
+    steps = request.args.get("steps")
     repository = Repository.find(current_app.config.get("REPOS_DIR_PATH"), repository_name)
 
     if repository:
-        if repository.file_exists(file_name):
-            file_content = repository.get_file_content(file_name)
-            if isinstance(file_content, str):
-                return Response("{}", mimetype="application/json")
-            else:
-                return Response(file_content.decode("utf-8"), mimetype="application/json")
+        if steps:
+            if repository.file_exists_in_commit(file_name, steps):
+                file_content = repository.get_file_content_from_commit(file_name, steps)
+                return render_file_content(file_content)
+        else:
+            if repository.file_exists(file_name):
+                file_content = repository.get_file_content(file_name)
+                return render_file_content(file_content)
 
     error = { "error": "Not found!" }
     return Response(json.dumps(error, sort_keys=True), mimetype="application/json"), 404
@@ -62,7 +65,7 @@ def updated_repository(repository_name):
     zip_file = zipfile.ZipFile(request.files["file"])
 
     for name in [name for name in os.listdir(repository_path) if name != ".git"]:
-            os.remove(os.path.join(repository_path, name))
+        os.remove(os.path.join(repository_path, name))
 
     zip_file.extractall(repository_path)
 
@@ -73,3 +76,10 @@ def updated_repository(repository_name):
         return "No changes where made"
 
     return "updated"
+
+def render_file_content(content):
+    if isinstance(content, str):
+        return Response("{}", mimetype="application/json")
+    else:
+        return Response(content.decode("utf-8"), mimetype="application/json")
+
