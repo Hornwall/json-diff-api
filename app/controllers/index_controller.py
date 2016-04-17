@@ -80,9 +80,14 @@ def updated_repository(repository_name):
 @index_blueprint.route("/<repository_name>/files/<file_name>/diff")
 def view_File(repository_name, file_name):
     repository = Repository.find(current_app.config.get("REPOS_DIR_PATH"), repository_name)
+    steps = request.args.get("steps")
 
     if repository:
-        return repository.get_file_diff(file_name, 1)
+        if repository.file_exists(file_name):
+            if steps:
+                return repository.get_file_diff(file_name, steps)
+            else:
+                return repository.get_file_diff(file_name, 1)
             # for temporary formatting .replace("\n", "</br>")
 
     error = { "error": "Not found!" }
