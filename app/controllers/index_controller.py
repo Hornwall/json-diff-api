@@ -77,6 +77,17 @@ def updated_repository(repository_name):
 
     return "updated"
 
+@index_blueprint.route("/<repository_name>/files/<file_name>/diff")
+def view_File(repository_name, file_name):
+    repository = Repository.find(current_app.config.get("REPOS_DIR_PATH"), repository_name)
+
+    if repository:
+        return repository.get_file_diff(file_name, 1)
+            # for temporary formatting .replace("\n", "</br>")
+
+    error = { "error": "Not found!" }
+    return Response(json.dumps(error, sort_keys=True), mimetype="application/json"), 404
+
 def render_file_content(content):
     if isinstance(content, str):
         return Response("{}", mimetype="application/json")

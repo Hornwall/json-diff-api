@@ -1,5 +1,6 @@
 import os
 import time
+import difflib
 
 from time import mktime
 from datetime import datetime
@@ -37,6 +38,12 @@ class Repository(object):
 
     def file_exists_in_commit(self, path, steps):
         return path in self.repo.commit("head~" + steps).tree
+
+    def get_file_diff(self, path, steps):
+        file_a = self.get_file_content_from_commit(path, "0").decode("utf-8")
+        file_b = self.get_file_content_from_commit(path, str(steps)).decode("utf-8")
+
+        return "".join(difflib.ndiff(file_a.splitlines(1), file_b.splitlines(1)))
 
 # Private
     def __get_date_time(self, timestamp):
