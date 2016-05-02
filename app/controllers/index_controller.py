@@ -85,10 +85,9 @@ def view_File(repository_name, file_name):
     if repository:
         if repository.file_exists(file_name):
             if steps:
-                return repository.get_file_diff(file_name, steps)
+                return Response(repository.get_file_diff(file_name, steps), mimetype="text/plain")
             else:
-                return repository.get_file_diff(file_name, 1)
-            # for temporary formatting .replace("\n", "</br>")
+                return Response(repository.get_file_diff(file_name, 1), mimetype="text/plain")
 
     error = { "error": "Not found!" }
     return Response(json.dumps(error, sort_keys=True), mimetype="application/json"), 404

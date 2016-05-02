@@ -55,20 +55,22 @@ class Repository(object):
                 self.repo.commit("HEAD~1").diff().iter_change_type(change_type)]
 
 
-# Class methods
-    def all(directory):
+    @classmethod
+    def all(cls, directory):
         return [Repository.find(directory, name) for name in os.listdir(directory)
                             if os.path.isdir(os.path.join(directory, name))
                             and Repository.__is_repo(os.path.join(directory, name))]
 
-    def find(repo_directory, repository_name):
+    @classmethod
+    def find(cls, repo_directory, repository_name):
         repo_path = os.path.join(repo_directory, repository_name)
         if os.path.isdir(repo_path) and Repository.__is_repo(repo_path):
             return Repository(Repo(repo_path), repository_name)
         else:
             return None
 
-    def find_or_create(repo_directory, repository_name):
+    @classmethod
+    def find_or_create(cls, repo_directory, repository_name):
         repo = Repository.find(repo_directory, repository_name)
 
         if not repo:
@@ -84,7 +86,8 @@ class Repository(object):
         else:
             return repo
 
-    def __is_repo(directory):
+    @classmethod
+    def __is_repo(cls, directory):
         try:
             Repo(directory)
         except:
