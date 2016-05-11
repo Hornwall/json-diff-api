@@ -92,6 +92,21 @@ def view_File(repository_name, file_name):
     error = { "error": "Not found!" }
     return Response(json.dumps(error, sort_keys=True), mimetype="application/json"), 404
 
+@index_blueprint.route("/<repository_name>/commits")
+def list_commits(repository_name):
+    amount = request.args.get("amount") or 10
+    repository = Repository.find(current_app.config.get("REPOS_DIR_PATH"), repository_name)
+
+    formatted_commits = []
+
+    for index, commit in enumerate(repository.get_commits(amount)):
+        commit_object = {}
+        commit_object["time"] = datetime.fromtimestamp(commit.committed_date).isoformat()
+        commit_object["step"] = index
+        formatted_commits.append(commit_object)
+
+    return Response(json.dumps(formatted_commits, sort_keys=True), mimetype="application/json")
+
 def render_file_content(content):
     if isinstance(content, str):
         return Response("{}", mimetype="application/json")

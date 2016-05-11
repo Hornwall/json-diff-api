@@ -45,6 +45,10 @@ class Repository(object):
 
         return "".join(difflib.ndiff(file_a.splitlines(1), file_b.splitlines(1)))
 
+    def get_commits(self, amount):
+        commits = list(self.repo.iter_commits('master', max_count=amount))
+        return commits
+
 # Private
     def __get_date_time(self, timestamp):
         t = time.gmtime(self.repo.head.commit.committed_date)
