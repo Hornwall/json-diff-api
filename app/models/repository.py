@@ -49,6 +49,10 @@ class Repository(object):
         commits = list(self.repo.iter_commits('master', max_count=amount))
         return commits
 
+    def search(self, search_term):
+        return self.repo.git.grep(search_term, i=True, l=True).split("\n")
+
+
 # Private
     def __get_date_time(self, timestamp):
         t = time.gmtime(self.repo.head.commit.committed_date)

@@ -34,7 +34,11 @@ def view_files(repository_name):
     repository = Repository.find(current_app.config.get("REPOS_DIR_PATH"), repository_name)
 
     if repository:
-        return Response(json.dumps(repository.list_files(), sort_keys=True), mimetype="application/json")
+        search_term = request.args.get("search_term")
+        if search_term:
+            return Response(json.dumps(repository.search(search_term), sort_keys=True), mimetype="application/json")
+        else:
+            return Response(json.dumps(repository.list_files(), sort_keys=True), mimetype="application/json")
     else:
         error = { "error": "Not found!" }
         return Response(json.dumps(error, sort_keys=True), mimetype="application/json"), 404
