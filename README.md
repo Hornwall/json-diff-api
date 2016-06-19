@@ -36,5 +36,5 @@ Returns a list of commits for the given repository
 ### Authentication
 The application does not enforce any form of authentication in its current state. This should be resolved if this where ever to be put into production.
 ### Testing with bigger data sources
-As of now the app has only been tested using NSL(link) which is a fairly small data source. Because of this the app should be tested with more and bigger data sets to make sure the API remains stable and can respond in a timely fassion. 
+As of now the app has only been tested using [NSL](http://nsl.mpa.se/) which is a fairly small data source. Because of this the app should be tested with more and bigger data sets to make sure the API remains stable and can respond in a timely fassion. 
 
