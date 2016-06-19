@@ -38,3 +38,6 @@ The application does not enforce any form of authentication in its current state
 ### Testing with bigger data sources
 As of now the app has only been tested using [NSL](http://nsl.mpa.se/) which is a fairly small data source. Because of this the app should be tested with more and bigger data sets to make sure the API remains stable and can respond in a timely fassion. 
 
+## Related projects
+* [JSON diff frontend](https://github.com/c0d3m0nkey/json-diff-frontend)
+* [XML to JSON converter](https://github.com/c0d3m0nkey/xml-to-json-converter)
